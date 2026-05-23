@@ -111,9 +111,7 @@ El dashboard en Power BI permite explorar los resultados desde tres ángulos:
 - **Tendencia mensual** — comparación de predicción vs. tendencia a lo largo del año.
 - **Ranking por entidad** — promedio de predicción, ordenado de mayor a menor.
 
-![1779500462746](images/README/1779500462746.png)![dashboard](image.png)
-
----
+![1779500767496](images/README/1779500767496.png)
 
 ## Estructura del repositorio
 
