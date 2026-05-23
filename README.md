@@ -35,19 +35,22 @@ Construir un sistema de predicción de tres capas:
 ## Metodología
 
 ### 1. Limpieza y agregación
+
 Los datos originales están a nivel de subtipo de delito. Se agruparon por `entidad × año × mes` sumando la incidencia, reduciendo el dataset a una serie de tiempo multivariada de 32 entidades.
 
 ### 2. Feature engineering
+
 El desafío central es que el modelo no puede ver el futuro, por lo que todas las variables se construyen a partir de información disponible *antes* del mes a predecir:
 
-| Feature | Descripción | Por qué importa |
-|---|---|---|
-| `lag_1` | Incidencia del mes anterior | Dependencia temporal directa |
-| `rolling_3` | Promedio móvil de 3 meses | Memoria histórica reciente |
-| `pct_change` | Cambio porcentual respecto al mes previo | Detecta aceleración o caída |
-| `diff_1` | Diferencia absoluta (mes actual − mes anterior) | Señal de cambio brusco |
-| `tendencia` | Contador temporal por entidad | Captura tendencia secular |
-| `sen_mes` / `cos_mes` | Codificación cíclica del mes | Estacionalidad sin ruptura en diciembre→enero |
+
+| Feature               | Descripción                                     | Por qué importa                               |
+| --------------------- | ------------------------------------------------ | ---------------------------------------------- |
+| `lag_1`               | Incidencia del mes anterior                      | Dependencia temporal directa                   |
+| `rolling_3`           | Promedio móvil de 3 meses                       | Memoria histórica reciente                    |
+| `pct_change`          | Cambio porcentual respecto al mes previo         | Detecta aceleración o caída                  |
+| `diff_1`              | Diferencia absoluta (mes actual − mes anterior) | Señal de cambio brusco                        |
+| `tendencia`           | Contador temporal por entidad                    | Captura tendencia secular                      |
+| `sen_mes` / `cos_mes` | Codificación cíclica del mes                   | Estacionalidad sin ruptura en diciembre→enero |
 
 La variable `entidad` se transformó con **Target Encoding** para evitar el alto cardinal de 32 categorías con One-Hot Encoding.
 
@@ -57,12 +60,13 @@ Los targets de clasificación (`alto_crimen`, `anomalia`) se derivaron de estad�
 
 Se entrenaron tres modelos con `GridSearchCV` (5-fold CV):
 
-| Modelo | Tarea | Métrica | Resultado |
-|---|---|---|---|
-| Logistic Regression | Clasificación alto crimen | F1 | **0.77** |
-| Logistic Regression + SMOTE | Detección de anomalías | F1 | **0.62** (clase minoritaria 15%) |
-| Ridge Regression | Predicción de volumen | R² / RMSE | 0.9739 / 358 |
-| **Random Forest Regressor** | Predicción de volumen | **R² / RMSE** | **0.9965 / 131** |
+
+| Modelo                      | Tarea                      | Métrica       | Resultado                        |
+| --------------------------- | -------------------------- | -------------- | -------------------------------- |
+| Logistic Regression         | Clasificación alto crimen | F1             | **0.77**                         |
+| Logistic Regression + SMOTE | Detección de anomalías   | F1             | **0.62** (clase minoritaria 15%) |
+| Ridge Regression            | Predicción de volumen     | R² / RMSE     | 0.9739 / 358                     |
+| **Random Forest Regressor** | Predicción de volumen     | **R² / RMSE** | **0.9965 / 131**                 |
 
 El modelo ganador para predicción fue **Random Forest** con `max_depth=None`, `min_samples_split=5`, `n_estimators=200`.
 
@@ -76,11 +80,12 @@ Para la detección de anomalías se aplicó **SMOTE** para balancear la clase mi
 
 Las tres entidades más afectadas concentran más del **45% de todos los robos** del período analizado:
 
-| Entidad | Promedio mensual (real) | Predicción | Error |
-|---|---|---|---|
-| Estado de México | 10,994 | 10,599 | −395 |
-| Ciudad de México | 6,252 | 6,194 | −58 |
-| Jalisco | 3,334 | 3,485 | +151 |
+
+| Entidad           | Promedio mensual (real) | Predicción | Error |
+| ----------------- | ----------------------- | ----------- | ----- |
+| Estado de México | 10,994                  | 10,599      | −395 |
+| Ciudad de México | 6,252                   | 6,194       | −58  |
+| Jalisco           | 3,334                   | 3,485       | +151  |
 
 Esta concentración no es solo un dato estadístico: implica que cualquier intervención de política pública o estrategia de cobertura de riesgo que no diferencie a Estado de México y CDMX del resto del país estará mal calibrada desde el inicio.
 
@@ -106,7 +111,7 @@ El dashboard en Power BI permite explorar los resultados desde tres ángulos:
 - **Tendencia mensual** — comparación de predicción vs. tendencia a lo largo del año.
 - **Ranking por entidad** — promedio de predicción, ordenado de mayor a menor.
 
-![dashboard](image.png)
+![1779500462746](images/README/1779500462746.png)![dashboard](image.png)
 
 ---
 
@@ -136,7 +141,7 @@ incidencia-delictiva/
 
 ## Cómo reproducir
 
-```bash 
+```bash
     # Clonar el repositorio
 git clone https://github.com/Jane-BA/incidencia-delictiva.git 
 cd incidencia-delictiva
